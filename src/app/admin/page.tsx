@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 import { db } from "@/db";
 import { pages } from "@/db/schema";
+import { DeletePageButton } from "./DeletePageButton";
 
 export default async function AdminPage() {
   const allPages = await db.select().from(pages).orderBy(pages.createdAt);
@@ -81,6 +82,7 @@ export default async function AdminPage() {
                         >
                           Edit
                         </Link>
+                        <DeletePageButton id={page.id} title={page.title} />
                       </div>
                     </TableCell>
                   </TableRow>

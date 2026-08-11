@@ -128,3 +128,8 @@
     @apply font-sans;
   }
 }
+
+.bn-suggestion-menu {
+  max-height: 400px !important;
+  overflow-y: auto !important;
+}

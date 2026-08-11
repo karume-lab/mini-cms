@@ -18,10 +18,14 @@ const Editor = dynamic(() => import("@/components/Editor"), { ssr: false });
 
 export default function NewPage() {
   const [content, setContent] = useState("");
+  const [title, setTitle] = useState("");
   const [isPending, setIsPending] = useState(false);
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSave = async () => {
+    if (!title) return;
     setIsPending(true);
+    const formData = new FormData();
+    formData.append("title", title);
     formData.append("content", content);
     try {
       await createPage(formData);
@@ -45,12 +49,14 @@ export default function NewPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={handleSubmit} className="space-y-6">
+          <div className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
               <Input
                 id="title"
                 name="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Company History"
                 required
               />
@@ -64,10 +70,10 @@ export default function NewPage() {
               <Editor onChange={setContent} />
             </div>
 
-            <Button type="submit" disabled={isPending}>
+            <Button onClick={handleSave} disabled={isPending || !title}>
               {isPending ? "Publishing..." : "Publish Page"}
             </Button>
-          </form>
+          </div>
         </CardContent>
       </Card>
     </div>

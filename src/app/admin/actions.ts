@@ -66,3 +66,15 @@ export async function updatePage(id: number, formData: FormData) {
   revalidatePath(`/${slug}`);
   redirect("/admin");
 }
+
+export async function deletePage(id: number) {
+  try {
+    await db.delete(pages).where(eq(pages.id, id));
+  } catch (error) {
+    console.error("Failed to delete page:", error);
+    throw new Error("Failed to delete page");
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/");
+}

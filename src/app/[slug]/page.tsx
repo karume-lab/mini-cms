@@ -1,8 +1,9 @@
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import BlockRenderer from "@/components/BlockRenderer";
+import { DirectorateDetailLayout } from "@/components/directorates/DirectorateDetailLayout";
 import { db } from "@/db";
-import { pages } from "@/db/schema";
+import { directorates, pages } from "@/db/schema";
 
 export default async function PublicPage({
   params,
@@ -21,6 +22,39 @@ export default async function PublicPage({
 
   const page = pageRecords[0];
 
+  let directorateData = null;
+  if (page.directorateId) {
+    const dirRecords = await db
+      .select()
+      .from(directorates)
+      .where(eq(directorates.id, page.directorateId));
+    if (dirRecords.length > 0) {
+      const dirPages = await db
+        .select()
+        .from(pages)
+        .where(eq(pages.directorateId, page.directorateId));
+      directorateData = {
+        ...dirRecords[0],
+        pages: dirPages,
+      };
+    }
+  }
+
+  // If the page belongs to a directorate, wrap it in the Directorate layout
+  if (directorateData) {
+    return (
+      <DirectorateDetailLayout
+        directorate={directorateData}
+        activePageSlug={page.slug}
+      >
+        <article className="prose prose-neutral dark:prose-invert lg:prose-lg max-w-none">
+          <BlockRenderer content={page.content} />
+        </article>
+      </DirectorateDetailLayout>
+    );
+  }
+
+  // Fallback default layout
   return (
     <div className="min-h-screen bg-background">
       <main className="max-w-4xl mx-auto px-4 py-12 md:py-24">

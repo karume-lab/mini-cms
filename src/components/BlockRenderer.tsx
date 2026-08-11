@@ -1,4 +1,5 @@
 import React from "react";
+import { ComponentRegistry } from "./blocks/componentRegistry";
 
 type Styles = {
   bold?: boolean;
@@ -80,6 +81,12 @@ const renderInlineContent = (content: BlockNoteContent[]) => {
 };
 
 const renderBlock = (block: Block) => {
+  // First check if this is a custom block in our registry
+  const CustomComponent = ComponentRegistry[block.type];
+  if (CustomComponent) {
+    return <CustomComponent key={block.id} {...block.props} />;
+  }
+
   switch (block.type) {
     case "paragraph":
       if (!block.content || block.content.length === 0)
