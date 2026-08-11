@@ -38,6 +38,11 @@ const items = [
     icon: CreditCard,
   },
   {
+    title: "Block Builder",
+    url: "/admin/block-builder",
+    icon: FileText,
+  },
+  {
     title: "Settings",
     url: "/admin/settings",
     icon: Settings,

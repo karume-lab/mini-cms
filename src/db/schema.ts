@@ -116,3 +116,16 @@ export const siteSettings = sqliteTable("site_settings", {
     .notNull()
     .$defaultFn(() => new Date()),
 });
+
+export const customBlockTemplates = sqliteTable("custom_block_templates", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  icon: text("icon").notNull().default("Layout"),
+  templateJson: text("template_json").notNull(), // JSON tree of primitives
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});

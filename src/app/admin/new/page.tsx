@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPage } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +20,13 @@ export default function NewPage() {
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [isPending, setIsPending] = useState(false);
+  const [templates, setTemplates] = useState<any[]>([]);
+
+  useEffect(() => {
+    import("@/components/admin/block-builder/actions").then(({ getTemplates }) => {
+      getTemplates().then(setTemplates);
+    });
+  }, []);
 
   const handleSave = async () => {
     if (!title) return;
@@ -67,7 +74,7 @@ export default function NewPage() {
 
             <div className="space-y-2">
               <Label>Content</Label>
-              <Editor onChange={setContent} />
+              <Editor onChange={setContent} templates={templates} />
             </div>
 
             <Button onClick={handleSave} disabled={isPending || !title}>

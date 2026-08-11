@@ -209,6 +209,8 @@ export const NewsListPageBlock = createReactBlockSpec(
   },
 );
 
+import { DynamicTemplateBlock } from "./DynamicTemplateBlock";
+
 export const customBlockSpecs = {
   hero: HeroBlock(),
   newsSection: NewsSectionBlock(),
@@ -218,4 +220,5 @@ export const customBlockSpecs = {
   applyCTA: ApplyCTABlock(),
   departmentsListPage: DepartmentsListPageBlock(),
   newsListPage: NewsListPageBlock(),
+  dynamicTemplate: DynamicTemplateBlock(),
 };

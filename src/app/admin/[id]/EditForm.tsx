@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { updatePage } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +29,13 @@ export default function EditForm({ page }: EditFormProps) {
   const [content, setContent] = useState(page.content);
   const [title, setTitle] = useState(page.title);
   const [isPending, setIsPending] = useState(false);
+  const [templates, setTemplates] = useState<any[]>([]);
+
+  useEffect(() => {
+    import("@/components/admin/block-builder/actions").then(({ getTemplates }) => {
+      getTemplates().then(setTemplates);
+    });
+  }, []);
 
   const handleSave = async () => {
     if (!title) return;
@@ -71,7 +78,7 @@ export default function EditForm({ page }: EditFormProps) {
 
           <div className="space-y-2">
             <Label>Content</Label>
-            <Editor initialContent={page.content} onChange={setContent} />
+            <Editor initialContent={page.content} onChange={setContent} templates={templates} />
           </div>
 
           <Button onClick={handleSave} disabled={isPending || !title}>

@@ -24,9 +24,10 @@ const schema = BlockNoteSchema.create({
 interface EditorProps {
   initialContent?: string;
   onChange: (content: string) => void;
+  templates?: any[]; // Array of customBlockTemplates
 }
 
-export default function Editor({ initialContent, onChange }: EditorProps) {
+export default function Editor({ initialContent, onChange, templates = [] }: EditorProps) {
   // Parse initial content if available
   const initialBlocks = initialContent ? JSON.parse(initialContent) : undefined;
 
@@ -34,6 +35,25 @@ export default function Editor({ initialContent, onChange }: EditorProps) {
     schema,
     initialContent: initialBlocks,
   });
+
+  const templateMenuItems = templates.map((template) => ({
+    title: template.name,
+    onItemClick: () => {
+      editor.insertBlocks(
+        [{
+          type: "dynamicTemplate",
+          props: {
+            templateJson: template.templateJson,
+            overrides: "{}"
+          }
+        }],
+        editor.getTextCursorPosition().block,
+        "after",
+      );
+    },
+    group: "Custom Blocks",
+    icon: <span>🧩</span>,
+  }));
 
   return (
     <div className="border rounded-md bg-background">
@@ -52,6 +72,7 @@ export default function Editor({ initialContent, onChange }: EditorProps) {
             filterSuggestionItems(
               [
                 ...getDefaultReactSlashMenuItems(editor),
+                ...templateMenuItems,
                 {
                   title: "Hero Banner",
                   onItemClick: () => {
