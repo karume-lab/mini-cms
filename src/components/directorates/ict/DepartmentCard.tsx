@@ -2,10 +2,13 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import type { Department } from "../data/departments";
 
 interface Props {
-  department: Department;
+  department: {
+    name: string;
+    excerpt: string;
+    slug: string;
+  };
 }
 
 function DepartmentCard({ department }: Props) {
@@ -19,6 +22,7 @@ function DepartmentCard({ department }: Props) {
         </p>
 
         <Button
+          nativeButton={false}
           render={
             <Link href={`/directorates/ict/departments/${department.slug}`} />
           }

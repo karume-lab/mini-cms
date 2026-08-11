@@ -1,14 +1,30 @@
 "use client";
+import { useEffect, useState } from "react";
 
+import { getCardCentreReplacements } from "@/actions/content";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { cardCentre } from "../data/card-centre";
+
+type Replacement = Awaited<ReturnType<typeof getCardCentreReplacements>>[number];
 
 function StudentReplacementSteps() {
+  const [replacements, setReplacements] = useState<Replacement[]>([]);
+
+  useEffect(() => {
+    getCardCentreReplacements().then((data) => {
+      // Data might have steps as JSON string, so we parse it
+      const parsedData = data.map((item) => ({
+        ...item,
+        steps: typeof item.steps === "string" ? JSON.parse(item.steps) : item.steps,
+      }));
+      setReplacements(parsedData);
+    });
+  }, []);
+
   return (
     <div className="mt-12">
       <h3 className="mb-6 text-2xl font-bold">
@@ -16,10 +32,10 @@ function StudentReplacementSteps() {
       </h3>
 
       <Accordion className="space-y-4">
-        {cardCentre.replacements.map((item) => (
+        {replacements.map((item) => (
           <AccordionItem
-            key={item.title}
-            value={item.title}
+            key={item.id}
+            value={item.id.toString()}
             className="rounded-xl border px-6"
           >
             <AccordionTrigger className="text-left font-semibold">
@@ -28,7 +44,7 @@ function StudentReplacementSteps() {
 
             <AccordionContent>
               <ol className="list-decimal space-y-3 pl-5 text-muted-foreground">
-                {item.steps.map((step) => (
+                {(item.steps as unknown as string[]).map((step: string) => (
                   <li key={step}>{step}</li>
                 ))}
               </ol>

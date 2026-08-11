@@ -1,6 +1,17 @@
+"use client";
 import { Target } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getSiteSetting } from "@/actions/content";
 
 function MissionSection() {
+  const [missionText, setMissionText] = useState("Loading...");
+
+  useEffect(() => {
+    getSiteSetting("mission_statement").then((text) => {
+      if (text) setMissionText(text);
+    });
+  }, []);
+
   return (
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -21,8 +32,7 @@ function MissionSection() {
 
           <div className="border-l-4 border-primary pl-6">
             <p className="text-lg leading-8 text-muted-foreground md:text-xl">
-              To enhance efficient and effective data management, user support
-              and excellent user experience and nurture innovations
+              {missionText}
             </p>
           </div>
         </div>

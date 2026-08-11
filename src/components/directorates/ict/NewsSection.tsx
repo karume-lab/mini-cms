@@ -3,11 +3,20 @@
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
+import { getNews } from "@/actions/content";
 import { Button } from "@/components/ui/button";
-import { news } from "../data/news";
+
+type NewsArticle = Awaited<ReturnType<typeof getNews>>[number];
 
 export default function NewsSection() {
+  const [news, setNews] = useState<NewsArticle[]>([]);
+
+  useEffect(() => {
+    getNews().then((data) => setNews(data));
+  }, []);
+
   const featuredNews = news.slice(0, 3);
 
   return (
@@ -25,6 +34,7 @@ export default function NewsSection() {
           </div>
 
           <Button
+            nativeButton={false}
             render={<Link href="/directorates/ict/news" />}
             variant="outline"
           >
@@ -41,7 +51,7 @@ export default function NewsSection() {
             >
               <div className="relative h-56 overflow-hidden">
                 <Image
-                  src={article.image}
+                  src={article.imageUrl}
                   alt={article.title}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -62,6 +72,7 @@ export default function NewsSection() {
                 </p>
 
                 <Button
+                  nativeButton={false}
                   render={
                     <Link href={`/directorates/ict/news/${article.slug}`} />
                   }

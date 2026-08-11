@@ -3,10 +3,20 @@
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+import { getNews } from "@/actions/content";
 import { Button } from "@/components/ui/button";
-import { news } from "../data/news";
+
+type NewsArticle = Awaited<ReturnType<typeof getNews>>[number];
 
 export default function NewsListPage() {
+  const [news, setNews] = useState<NewsArticle[]>([]);
+
+  useEffect(() => {
+    getNews().then((data) => setNews(data));
+  }, []);
+
   return (
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -30,7 +40,7 @@ export default function NewsListPage() {
             >
               <div className="relative h-56 overflow-hidden">
                 <Image
-                  src={article.image}
+                  src={article.imageUrl}
                   alt={article.title}
                   fill
                   className="object-cover transition duration-500 group-hover:scale-105"
@@ -51,6 +61,7 @@ export default function NewsListPage() {
                 </p>
 
                 <Button
+                  nativeButton={false}
                   render={
                     <Link href={`/directorates/ict/news/${article.slug}`} />
                   }

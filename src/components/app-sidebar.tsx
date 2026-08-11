@@ -1,4 +1,4 @@
-import { FileText } from "lucide-react";
+import { FileText, Image, Building2, Newspaper, CreditCard, Settings } from "lucide-react";
 import Link from "next/link";
 import {
   Sidebar,
@@ -16,6 +16,31 @@ const items = [
     title: "Pages",
     url: "/admin",
     icon: FileText,
+  },
+  {
+    title: "Hero Slides",
+    url: "/admin/hero",
+    icon: Image,
+  },
+  {
+    title: "Departments",
+    url: "/admin/departments",
+    icon: Building2,
+  },
+  {
+    title: "News",
+    url: "/admin/news",
+    icon: Newspaper,
+  },
+  {
+    title: "Services",
+    url: "/admin/services",
+    icon: CreditCard,
+  },
+  {
+    title: "Settings",
+    url: "/admin/settings",
+    icon: Settings,
   },
 ];
 

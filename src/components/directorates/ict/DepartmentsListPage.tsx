@@ -1,7 +1,15 @@
-import { departments } from "../data/departments";
+"use client";
+import { useEffect, useState } from "react";
 import DepartmentCard from "./DepartmentCard";
+import { getDepartments } from "@/actions/content";
 
 export default function DepartmentsListPage() {
+  const [departments, setDepartments] = useState<any[]>([]);
+
+  useEffect(() => {
+    getDepartments().then((data) => setDepartments(data));
+  }, []);
+
   return (
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">

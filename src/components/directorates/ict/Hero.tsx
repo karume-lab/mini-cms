@@ -2,64 +2,41 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
-
-const SLIDES = [
-  {
-    id: 1,
-    tagline: "CAMPUS LIFE",
-    title: "Our Classes that fit your busy life and leisure",
-    image: "/landing-page/robotics-dojo.webp",
-  },
-  {
-    id: 2,
-    tagline: "ICT COMPETITION 2025",
-    title:
-      "Vice Chancellor Prof. Victoria Ngumi (4th right) with students and staff winners of Huawei regional ICT competition 2025",
-    image: "/landing-page/huawei-ict-2025.webp",
-  },
-
-  {
-    id: 3,
-    tagline: "TRAINING WORKSHOP",
-    title:
-      "VC interacts with participants of Turkana County during the JICA sponsored in-country training workshop",
-    image: "/landing-page/training-workshop.webp",
-  },
-  {
-    id: 4,
-    tagline: "COMMERCIALIZATION",
-    title:
-      "Jkuat and partners JHUB AFRICA, Mush & CO. and KOICA unveil a Smart Mushroom Farm",
-    image: "/landing-page/commercialization.webp",
-  },
-];
+import { getHeroSlides } from "@/actions/content";
 
 function Hero() {
   const [current, setCurrent] = useState(0);
-
-  const handleNext = useCallback(() => {
-    setCurrent((prev) => (prev + 1) % SLIDES.length);
-  }, []);
-
-  const handlePrev = useCallback(() => {
-    setCurrent((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
-  }, []);
+  const [slides, setSlides] = useState<any[]>([]);
 
   useEffect(() => {
-    if (SLIDES.length <= 1) return;
+    getHeroSlides().then((data) => setSlides(data));
+  }, []);
+
+  const handleNext = useCallback(() => {
+    setCurrent((prev) => (prev + 1) % slides.length);
+  }, [slides.length]);
+
+  const handlePrev = useCallback(() => {
+    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
+  }, [slides.length]);
+
+  useEffect(() => {
+    if (slides.length <= 1) return;
 
     const interval = setInterval(() => {
       handleNext();
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [handleNext]);
+  }, [handleNext, slides.length]);
+
+  if (slides.length === 0) return null;
 
   return (
     <section className="relative h-[85vh] min-h-150 w-full overflow-hidden bg-black text-white">
       {/* LAYER 1: Background Images */}
       <div className="absolute inset-0 z-0">
-        {SLIDES.map((slide, index) => (
+        {slides.map((slide, index) => (
           <div
             key={slide.id}
             className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
@@ -68,7 +45,7 @@ function Hero() {
           >
             <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-black/50 z-10" />
             <Image
-              src={slide.image}
+              src={slide.imageUrl}
               alt={slide.title}
               fill
               priority={index === 0}
@@ -93,13 +70,13 @@ function Hero() {
 
         {/* Middle/Bottom-ish Section: Left-Aligned Tagline and Subtitles */}
         <div className="w-full flex flex-col items-start text-left mt-auto mb-6 max-w-3xl pr-12">
-          {SLIDES[current].tagline && (
+          {slides[current].tagline && (
             <span className="inline-block bg-primary text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded mb-3">
-              {SLIDES[current].tagline}
+              {slides[current].tagline}
             </span>
           )}
           <h2 className="text-xl font-medium md:text-3xl leading-snug drop-shadow-lg transition-all duration-500">
-            {SLIDES[current].title}
+            {slides[current].title}
           </h2>
         </div>
 
@@ -107,7 +84,7 @@ function Hero() {
         <div className="w-full flex flex-col sm:flex-row items-end sm:items-center justify-between gap-4">
           {/* Progress Indicators (Left Side Footer) */}
           <div className="flex gap-1.5 order-2 sm:order-1 mb-2 sm:mb-0">
-            {SLIDES.map((slide, index) => (
+            {slides.map((slide, index) => (
               <button
                 key={`indicator-${slide.id}`}
                 type="button"
@@ -122,7 +99,7 @@ function Hero() {
         </div>
       </div>
       {/* LAYER 3: Left & Right Manual Browse Arrow Buttons */}
-      {SLIDES.length > 1 && (
+      {slides.length > 1 && (
         <>
           <button
             type="button"

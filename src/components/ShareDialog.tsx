@@ -87,16 +87,18 @@ export const ShareDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          size={showLabel ? "default" : "icon"}
-          aria-label="Share"
-        >
-          <Share2 className={showLabel ? "mr-2 h-4 w-4" : "h-4 w-4"} />
-          {showLabel && "Share"}
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button
+            variant="outline"
+            size={showLabel ? "default" : "icon"}
+            aria-label="Share"
+          >
+            <Share2 className={showLabel ? "mr-2 h-4 w-4" : "h-4 w-4"} />
+            {showLabel && "Share"}
+          </Button>
+        }
+      />
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Share</DialogTitle>

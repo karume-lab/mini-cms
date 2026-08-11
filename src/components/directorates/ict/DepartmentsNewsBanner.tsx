@@ -35,7 +35,7 @@ function DepartmentNewsBanner({
               {description}
             </p>
 
-            <Button render={<Link href={href} />} className="mt-8">
+            <Button nativeButton={false} render={<Link href={href} />} className="mt-8">
               Learn More
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
