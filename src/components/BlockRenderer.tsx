@@ -1,6 +1,6 @@
 import React from "react";
 import { ComponentRegistry } from "./blocks/componentRegistry";
-import { DynamicTemplateRenderer } from "./blocks/DynamicTemplateBlock";
+import { DynamicTemplateRenderer } from "./blocks/DynamicTemplateRenderer";
 
 type Styles = {
   bold?: boolean;
