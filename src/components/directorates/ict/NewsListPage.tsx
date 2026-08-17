@@ -10,12 +10,14 @@ import { Button } from "@/components/ui/button";
 
 type NewsArticle = Awaited<ReturnType<typeof getNews>>[number];
 
-export default function NewsListPage() {
-  const [news, setNews] = useState<NewsArticle[]>([]);
+export default function NewsListPage({ initialNews }: { initialNews?: NewsArticle[] }) {
+  const [news, setNews] = useState<NewsArticle[]>(initialNews || []);
 
   useEffect(() => {
-    getNews().then((data) => setNews(data));
-  }, []);
+    if (!initialNews) {
+      getNews().then((data) => setNews(data));
+    }
+  }, [initialNews]);
 
   return (
     <section className="py-16 lg:py-24">
@@ -32,11 +34,11 @@ export default function NewsListPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 overflow-x-auto md:grid-cols-2 lg:grid-cols-3 ">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {news.map((article) => (
             <article
               key={article.slug}
-              className="group w-85 shrink-0 overflow-hidden rounded-xl border bg-background"
+              className="group overflow-hidden rounded-xl border bg-background"
             >
               <div className="relative h-56 overflow-hidden">
                 <Image
@@ -61,14 +63,12 @@ export default function NewsListPage() {
                 </p>
 
                 <Button
-                  nativeButton={false}
-                  render={
-                    <Link href={`/directorates/ict/news/${article.slug}`} />
-                  }
+                 
+                  render={<Link href="/news" />}
                   className="gap-2"
                 >
                   Read More
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="size-4" />
                 </Button>
               </div>
             </article>

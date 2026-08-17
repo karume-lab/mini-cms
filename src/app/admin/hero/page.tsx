@@ -10,8 +10,8 @@ export default async function HeroAdminPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Hero Slides</h1>
-        <Button asChild>
-          <Link href="/admin/hero/new">Add Slide</Link>
+        <Button render={<Link href="/admin/hero/new" />}>
+          Add Slide
         </Button>
       </div>
 

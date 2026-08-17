@@ -133,3 +133,47 @@
   max-height: 400px !important;
   overflow-y: auto !important;
 }
+
+.bn-shadcn .bn-editor a:not([data-slot="button"]) {
+  color: var(--foreground) !important;
+  text-decoration: none !important;
+}
+
+.bn-shadcn .bn-root {
+  font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif) !important;
+}
+
+.bn-shadcn .bn-default-styles {
+  font-family: inherit !important;
+}
+
+.bn-shadcn .bn-editor {
+  color: var(--foreground) !important;
+}
+
+.bn-shadcn .bn-editor blockquote {
+  border-left-color: var(--border) !important;
+  color: var(--muted-foreground) !important;
+}
+
+.bn-shadcn .bn-editor hr {
+  border-color: var(--border) !important;
+}
+
+.bn-shadcn .bn-editor table {
+  border-color: var(--border) !important;
+}
+
+.bn-shadcn .bn-editor td {
+  border-color: var(--border) !important;
+}
+
+.bn-shadcn .bn-editor pre {
+  background-color: var(--muted) !important;
+  color: var(--muted-foreground) !important;
+}
+
+.bn-shadcn .bn-editor code {
+  background-color: var(--muted) !important;
+  color: var(--muted-foreground) !important;
+}

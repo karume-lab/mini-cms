@@ -3,12 +3,16 @@ import { useEffect, useState } from "react";
 import DepartmentCard from "./DepartmentCard";
 import { getDepartments } from "@/actions/content";
 
-export default function DepartmentsListPage() {
-  const [departments, setDepartments] = useState<any[]>([]);
+type Department = Awaited<ReturnType<typeof getDepartments>>[number];
+
+export default function DepartmentsListPage({ initialDepartments }: { initialDepartments?: Department[] }) {
+  const [departments, setDepartments] = useState<Department[]>(initialDepartments || []);
 
   useEffect(() => {
-    getDepartments().then((data) => setDepartments(data));
-  }, []);
+    if (!initialDepartments) {
+      getDepartments().then((data) => setDepartments(data));
+    }
+  }, [initialDepartments]);
 
   return (
     <section className="py-16 lg:py-24">

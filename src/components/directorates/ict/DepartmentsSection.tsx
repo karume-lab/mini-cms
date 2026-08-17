@@ -1,22 +1,12 @@
-"use client";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 import { getDepartments } from "@/actions/content";
 import { Button } from "@/components/ui/button";
-
 import DepartmentCard from "./DepartmentCard";
 
-type Department = Awaited<ReturnType<typeof getDepartments>>[number];
-
-export default function DepartmentsSection() {
-  const [departments, setDepartments] = useState<Department[]>([]);
-
-  useEffect(() => {
-    getDepartments().then((data) => setDepartments(data));
-  }, []);
-
+export default async function DepartmentsSection() {
+  const departments = await getDepartments();
   const featuredDepartments = departments.slice(0, 3);
 
   return (
@@ -38,12 +28,12 @@ export default function DepartmentsSection() {
           </div>
 
           <Button
-            nativeButton={false}
-            render={<Link href="/directorates/ict/departments" />}
+           
+            render={<Link href="/departments" />}
             variant="outline"
           >
             View All Departments
-            <ArrowRight className="ml-2 h-4 w-4" />
+            <ArrowRight className="ml-2 size-4" />
           </Button>
         </div>
 

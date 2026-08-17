@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -10,12 +9,14 @@ import { Button } from "@/components/ui/button";
 
 type NewsArticle = Awaited<ReturnType<typeof getNews>>[number];
 
-export default function NewsSection() {
-  const [news, setNews] = useState<NewsArticle[]>([]);
+export default function NewsSection({ initialNews }: { initialNews?: NewsArticle[] }) {
+  const [news, setNews] = useState<NewsArticle[]>(initialNews || []);
 
   useEffect(() => {
-    getNews().then((data) => setNews(data));
-  }, []);
+    if (!initialNews) {
+      getNews().then((data) => setNews(data));
+    }
+  }, [initialNews]);
 
   const featuredNews = news.slice(0, 3);
 
@@ -34,12 +35,12 @@ export default function NewsSection() {
           </div>
 
           <Button
-            nativeButton={false}
-            render={<Link href="/directorates/ict/news" />}
+           
+            render={<Link href="/news" />}
             variant="outline"
           >
             View All News
-            <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 size-4" />
           </Button>
         </div>
 
@@ -50,11 +51,11 @@ export default function NewsSection() {
               className="group overflow-hidden rounded-xl border bg-background transition-shadow hover:shadow-lg"
             >
               <div className="relative h-56 overflow-hidden">
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={article.imageUrl}
                   alt={article.title}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
 
@@ -72,14 +73,12 @@ export default function NewsSection() {
                 </p>
 
                 <Button
-                  nativeButton={false}
-                  render={
-                    <Link href={`/directorates/ict/news/${article.slug}`} />
-                  }
+                 
+                  render={<Link href="/news" />}
                   className="gap-2"
                 >
                   Read More
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="size-4" />
                 </Button>
               </div>
             </article>

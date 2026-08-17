@@ -1,16 +1,8 @@
-"use client";
 import { Target } from "lucide-react";
-import { useEffect, useState } from "react";
 import { getSiteSetting } from "@/actions/content";
 
-function MissionSection() {
-  const [missionText, setMissionText] = useState("Loading...");
-
-  useEffect(() => {
-    getSiteSetting("mission_statement").then((text) => {
-      if (text) setMissionText(text);
-    });
-  }, []);
+export default async function MissionSection() {
+  const missionText = await getSiteSetting("mission_statement");
 
   return (
     <section className="py-16 lg:py-24">
@@ -18,7 +10,7 @@ function MissionSection() {
         <div className="mx-auto max-w-4xl rounded-2xl border bg-muted/30 p-8 shadow-sm lg:p-12">
           <div className="mb-6 flex items-center gap-3">
             <div className="rounded-full bg-primary/10 p-3 text-primary">
-              <Target className="h-6 w-6" />
+              <Target className="size-6" />
             </div>
 
             <div>
@@ -32,7 +24,7 @@ function MissionSection() {
 
           <div className="border-l-4 border-primary pl-6">
             <p className="text-lg leading-8 text-muted-foreground md:text-xl">
-              {missionText}
+              {missionText || ""}
             </p>
           </div>
         </div>
@@ -40,4 +32,3 @@ function MissionSection() {
     </section>
   );
 }
-export default MissionSection;

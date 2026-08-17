@@ -107,7 +107,7 @@ function Hero() {
             className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-black/40 backdrop-blur-xs border border-white/10 text-primary hover:bg-primary hover:text-white transition duration-300 shadow-md group"
             aria-label="Previous slide"
           >
-            <ChevronLeft className="h-6 w-6 group-hover:scale-105 transition" />
+            <ChevronLeft className="size-6 group-hover:scale-105 transition" />
           </button>
           <button
             type="button"
@@ -115,7 +115,7 @@ function Hero() {
             className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-black/40 backdrop-blur-xs border border-white/10 text-primary hover:bg-primary hover:text-white transition duration-300 shadow-md group"
             aria-label="Next slide"
           >
-            <ChevronRight className="h-6 w-6 group-hover:scale-105 transition" />
+            <ChevronRight className="size-6 group-hover:scale-105 transition" />
           </button>
         </>
       )}

@@ -1,5 +1,6 @@
 import React from "react";
 import { ComponentRegistry } from "./blocks/componentRegistry";
+import { DynamicTemplateRenderer } from "./blocks/DynamicTemplateBlock";
 
 type Styles = {
   bold?: boolean;
@@ -25,7 +26,7 @@ type LinkContent = {
 
 type BlockNoteContent = TextContent | LinkContent;
 
-interface Block {
+export interface Block {
   id: string;
   type: string;
   props: Record<string, string | number | boolean | undefined>;
@@ -63,6 +64,13 @@ const renderInlineContent = (content: BlockNoteContent[]) => {
           </span>
         );
       }
+      if (c.styles.backgroundColor) {
+        text = (
+          <mark key={k} style={{ backgroundColor: c.styles.backgroundColor }}>
+            {text}
+          </mark>
+        );
+      }
       return <React.Fragment key={k}>{text}</React.Fragment>;
     }
     if (c.type === "link") {
@@ -81,10 +89,13 @@ const renderInlineContent = (content: BlockNoteContent[]) => {
 };
 
 const renderBlock = (block: Block) => {
-  // First check if this is a custom block in our registry
   const CustomComponent = ComponentRegistry[block.type];
   if (CustomComponent) {
     return <CustomComponent key={block.id} {...block.props} />;
+  }
+
+  if (block.type === "dynamicTemplate") {
+    return <DynamicTemplateRenderer key={block.id} block={block} />;
   }
 
   switch (block.type) {
@@ -142,7 +153,7 @@ const renderBlock = (block: Block) => {
       return (
         <li key={block.id} className="mt-2">
           {renderInlineContent(block.content)}
-          {block.children.length > 0 && (
+          {block.children?.length > 0 && (
             <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
               {block.children.map(renderBlock)}
             </ul>
@@ -154,13 +165,103 @@ const renderBlock = (block: Block) => {
       return (
         <li key={block.id} className="mt-2">
           {renderInlineContent(block.content)}
-          {block.children.length > 0 && (
+          {block.children?.length > 0 && (
             <ol className="my-6 ml-6 list-decimal [&>li]:mt-2">
               {block.children.map(renderBlock)}
             </ol>
           )}
         </li>
       );
+
+    case "checkListItem":
+      return (
+        <li key={block.id} className="mt-2 flex items-start gap-2">
+          <input
+            type="checkbox"
+            checked={block.props.checked as boolean}
+            readOnly
+            className="mt-1 accent-primary"
+          />
+          <span>{renderInlineContent(block.content)}</span>
+        </li>
+      );
+
+    case "toggleListItem":
+      return (
+        <details key={block.id} className="mt-2 group">
+          <summary className="cursor-pointer font-medium list-none [&::marker]:text-muted-foreground">
+            {renderInlineContent(block.content)}
+          </summary>
+          {block.children?.length > 0 && (
+            <div className="ml-6 mt-2">
+              {block.children.map(renderBlock)}
+            </div>
+          )}
+        </details>
+      );
+
+    case "image":
+      return (
+        <figure key={block.id} className="my-6">
+          <img
+            src={block.props.url as string}
+            alt={(block.props.caption as string) || ""}
+            className="rounded-lg border w-full object-cover"
+          />
+          {block.props.caption && (
+            <figcaption className="mt-2 text-center text-sm text-muted-foreground">
+              {block.props.caption as string}
+            </figcaption>
+          )}
+        </figure>
+      );
+
+    case "table": {
+      const rows = block.children || [];
+      return (
+        <div key={block.id} className="my-6 overflow-x-auto">
+          <table className="w-full border-collapse border">
+            <tbody>
+              {rows.map((row, ri) => (
+                <tr key={ri}>
+                  {row.children?.map((cell, ci) => (
+                    <td
+                      key={ci}
+                      className="border px-4 py-2"
+                    >
+                      {renderInlineContent(cell.content)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+
+    case "codeBlock":
+      return (
+        <pre
+          key={block.id}
+          className="my-6 overflow-x-auto rounded-lg bg-muted p-4 font-mono text-sm"
+        >
+          <code>{(block.content as unknown as TextContent[])?.map(c => c.type === "text" ? c.text : "").join("")}</code>
+        </pre>
+      );
+
+    case "blockquote":
+      return (
+        <blockquote
+          key={block.id}
+          className="my-6 border-l-4 border-border pl-6 text-muted-foreground italic"
+        >
+          {renderInlineContent(block.content)}
+        </blockquote>
+      );
+
+    case "hr":
+      return <hr key={block.id} className="my-8 border-border" />;
 
     default:
       console.warn(`Unsupported block type: ${block.type}`);
@@ -232,7 +333,11 @@ export default function BlockRenderer({ content }: BlockRendererProps) {
         currentList = null;
       }
 
-      renderedBlocks.push(renderBlock(block));
+      renderedBlocks.push(
+        <React.Fragment key={block.id || `block-${i}`}>
+          {renderBlock(block)}
+        </React.Fragment>,
+      );
     }
   }
 

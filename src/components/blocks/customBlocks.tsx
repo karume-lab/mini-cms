@@ -1,215 +1,42 @@
 import { createReactBlockSpec } from "@blocknote/react";
 import { ComponentRegistry } from "./componentRegistry";
-
-export const HeroBlock = createReactBlockSpec(
-  {
-    type: "hero",
-    propSchema: {},
-    content: "none",
-  },
-  {
-    render: () => {
-      const Component = ComponentRegistry.hero;
-      return (
-        <div
-          contentEditable={false}
-          className="my-4 w-full block border-2 border-dashed border-primary/20 rounded-xl overflow-hidden opacity-90 hover:opacity-100 transition-opacity"
-        >
-          <div className="bg-primary/5 p-2 text-xs font-bold text-primary uppercase text-center border-b border-primary/10">
-            Hero Section
-          </div>
-          <div className="pointer-events-none select-none">
-            <Component />
-          </div>
-        </div>
-      );
-    },
-  },
-);
-
-export const NewsSectionBlock = createReactBlockSpec(
-  {
-    type: "newsSection",
-    propSchema: {},
-    content: "none",
-  },
-  {
-    render: () => {
-      const Component = ComponentRegistry.newsSection;
-      return (
-        <div
-          contentEditable={false}
-          className="my-4 w-full block border-2 border-dashed border-primary/20 rounded-xl overflow-hidden opacity-90 hover:opacity-100 transition-opacity"
-        >
-          <div className="bg-primary/5 p-2 text-xs font-bold text-primary uppercase text-center border-b border-primary/10">
-            News Section
-          </div>
-          <div className="pointer-events-none select-none">
-            <Component />
-          </div>
-        </div>
-      );
-    },
-  },
-);
-
-export const MissionSectionBlock = createReactBlockSpec(
-  {
-    type: "missionSection",
-    propSchema: {},
-    content: "none",
-  },
-  {
-    render: () => {
-      const Component = ComponentRegistry.missionSection;
-      return (
-        <div
-          contentEditable={false}
-          className="my-4 w-full block border-2 border-dashed border-primary/20 rounded-xl overflow-hidden opacity-90 hover:opacity-100 transition-opacity"
-        >
-          <div className="bg-primary/5 p-2 text-xs font-bold text-primary uppercase text-center border-b border-primary/10">
-            Mission Section
-          </div>
-          <div className="pointer-events-none select-none">
-            <Component />
-          </div>
-        </div>
-      );
-    },
-  },
-);
-
-export const DepartmentsSectionBlock = createReactBlockSpec(
-  {
-    type: "departmentsSection",
-    propSchema: {},
-    content: "none",
-  },
-  {
-    render: () => {
-      const Component = ComponentRegistry.departmentsSection;
-      return (
-        <div
-          contentEditable={false}
-          className="my-4 w-full block border-2 border-dashed border-primary/20 rounded-xl overflow-hidden opacity-90 hover:opacity-100 transition-opacity"
-        >
-          <div className="bg-primary/5 p-2 text-xs font-bold text-primary uppercase text-center border-b border-primary/10">
-            Departments Section
-          </div>
-          <div className="pointer-events-none select-none">
-            <Component />
-          </div>
-        </div>
-      );
-    },
-  },
-);
-
-export const CardCentreBlock = createReactBlockSpec(
-  {
-    type: "cardCentre",
-    propSchema: {},
-    content: "none",
-  },
-  {
-    render: () => {
-      const Component = ComponentRegistry.cardCentre;
-      return (
-        <div
-          contentEditable={false}
-          className="my-4 w-full block border-2 border-dashed border-primary/20 rounded-xl overflow-hidden opacity-90 hover:opacity-100 transition-opacity"
-        >
-          <div className="bg-primary/5 p-2 text-xs font-bold text-primary uppercase text-center border-b border-primary/10">
-            Card Centre Section
-          </div>
-          <div className="pointer-events-none select-none">
-            <Component />
-          </div>
-        </div>
-      );
-    },
-  },
-);
-
-export const ApplyCTABlock = createReactBlockSpec(
-  {
-    type: "applyCTA",
-    propSchema: {},
-    content: "none",
-  },
-  {
-    render: () => {
-      const Component = ComponentRegistry.applyCTA;
-      return (
-        <div
-          contentEditable={false}
-          className="my-4 w-full block border-2 border-dashed border-primary/20 rounded-xl overflow-hidden opacity-90 hover:opacity-100 transition-opacity"
-        >
-          <div className="bg-primary/5 p-2 text-xs font-bold text-primary uppercase text-center border-b border-primary/10">
-            Apply CTA Section
-          </div>
-          <div className="pointer-events-none select-none">
-            <Component />
-          </div>
-        </div>
-      );
-    },
-  },
-);
-
-export const DepartmentsListPageBlock = createReactBlockSpec(
-  {
-    type: "departmentsListPage",
-    propSchema: {},
-    content: "none",
-  },
-  {
-    render: () => {
-      const Component = ComponentRegistry.departmentsListPage;
-      return (
-        <div
-          contentEditable={false}
-          className="my-4 w-full block border-2 border-dashed border-primary/20 rounded-xl overflow-hidden opacity-90 hover:opacity-100 transition-opacity"
-        >
-          <div className="bg-primary/5 p-2 text-xs font-bold text-primary uppercase text-center border-b border-primary/10">
-            Departments List Page
-          </div>
-          <div className="pointer-events-none select-none">
-            <Component />
-          </div>
-        </div>
-      );
-    },
-  },
-);
-
-export const NewsListPageBlock = createReactBlockSpec(
-  {
-    type: "newsListPage",
-    propSchema: {},
-    content: "none",
-  },
-  {
-    render: () => {
-      const Component = ComponentRegistry.newsListPage;
-      return (
-        <div
-          contentEditable={false}
-          className="my-4 w-full block border-2 border-dashed border-primary/20 rounded-xl overflow-hidden opacity-90 hover:opacity-100 transition-opacity"
-        >
-          <div className="bg-primary/5 p-2 text-xs font-bold text-primary uppercase text-center border-b border-primary/10">
-            News List Page
-          </div>
-          <div className="pointer-events-none select-none">
-            <Component />
-          </div>
-        </div>
-      );
-    },
-  },
-);
-
 import { DynamicTemplateBlock } from "./DynamicTemplateBlock";
+import type React from "react";
+
+function createCMSBlock(
+  type: string,
+  label: string,
+  Component: React.ElementType,
+) {
+  return createReactBlockSpec(
+    { type, propSchema: {}, content: "none" },
+    {
+      render: () => (
+        <div
+          contentEditable={false}
+          className="my-4 w-full block border border-border rounded-xl overflow-hidden"
+        >
+          <div className="bg-muted/50 px-3 py-1.5 text-[0.65rem] font-semibold text-muted-foreground uppercase tracking-wider border-b border-border flex items-center gap-1.5">
+            <span className="size-1.5 rounded-full bg-primary/60" />
+            {label}
+          </div>
+          <div className="pointer-events-none">
+            <Component />
+          </div>
+        </div>
+      ),
+    },
+  );
+}
+
+export const HeroBlock = createCMSBlock("hero", "Hero Section", ComponentRegistry.hero);
+export const NewsSectionBlock = createCMSBlock("newsSection", "News Section", ComponentRegistry.newsSection);
+export const MissionSectionBlock = createCMSBlock("missionSection", "Mission Section", ComponentRegistry.missionSection);
+export const DepartmentsSectionBlock = createCMSBlock("departmentsSection", "Departments Section", ComponentRegistry.departmentsSection);
+export const CardCentreBlock = createCMSBlock("cardCentre", "Card Centre", ComponentRegistry.cardCentre);
+export const ApplyCTABlock = createCMSBlock("applyCTA", "Apply CTA", ComponentRegistry.applyCTA);
+export const DepartmentsListPageBlock = createCMSBlock("departmentsListPage", "Departments List", ComponentRegistry.departmentsListPage);
+export const NewsListPageBlock = createCMSBlock("newsListPage", "News List", ComponentRegistry.newsListPage);
 
 export const customBlockSpecs = {
   hero: HeroBlock(),

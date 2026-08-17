@@ -42,10 +42,16 @@ export async function updatePage(id: number, formData: FormData) {
     throw new Error("Title and content are required");
   }
 
-  const slug = title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)+/g, "");
+  const existing = await db.select().from(pages).where(eq(pages.id, id));
+  const oldSlug = existing[0]?.slug;
+
+  const slugChanged = existing.length > 0 && existing[0].title !== title;
+  const slug = slugChanged
+    ? title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)+/g, "")
+    : oldSlug!;
 
   try {
     await db
@@ -63,7 +69,8 @@ export async function updatePage(id: number, formData: FormData) {
   }
 
   revalidatePath("/admin");
-  revalidatePath(`/${slug}`);
+  if (oldSlug) revalidatePath(`/${oldSlug}`);
+  if (slugChanged && slug !== oldSlug) revalidatePath(`/${slug}`);
   redirect("/admin");
 }
 

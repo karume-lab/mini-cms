@@ -22,13 +22,11 @@ function DepartmentCard({ department }: Props) {
         </p>
 
         <Button
-          nativeButton={false}
-          render={
-            <Link href={`/directorates/ict/departments/${department.slug}`} />
-          }
+         
+          render={<Link href="/departments" />}
         >
           View More
-          <ArrowRight className="ml-2 h-4 w-4" />
+          <ArrowRight className="ml-2 size-4" />
         </Button>
       </CardContent>
     </Card>

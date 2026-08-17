@@ -12,8 +12,8 @@ export default async function ServicesAdminPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold">Services</h2>
-          <Button asChild>
-            <Link href="/admin/services/new-service">Add Service</Link>
+          <Button render={<Link href="/admin/services/new-service" />}>
+            Add Service
           </Button>
         </div>
 
@@ -47,8 +47,8 @@ export default async function ServicesAdminPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold">Replacement Steps</h2>
-          <Button asChild>
-            <Link href="/admin/services/new-replacement">Add Replacement Step</Link>
+          <Button render={<Link href="/admin/services/new-replacement" />}>
+            Add Replacement Step
           </Button>
         </div>
 

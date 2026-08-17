@@ -9,8 +9,8 @@ export default async function NewsAdminPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">News & Announcements</h1>
-        <Button asChild>
-          <Link href="/admin/news/new">Add Article</Link>
+        <Button render={<Link href="/admin/news/new" />}>
+          Add Article
         </Button>
       </div>
 

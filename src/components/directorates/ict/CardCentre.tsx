@@ -1,75 +1,68 @@
-"use client";
-import { BadgeCheck, CreditCard, RefreshCw } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import StudentReplacementSteps from "./StudentReplacementSteps";
-import { getCardCentreServices, getSiteSetting } from "@/actions/content";
+import { getCardCentreServices, getCardCentreReplacements } from "@/actions/content";
+import { Card, CardContent } from "@/components/ui/card";
+import { CreditCard, BadgeCheck, RefreshCw } from "lucide-react";
 
-const iconMap: Record<string, any> = {
-  CreditCard,
-  BadgeCheck,
-  RefreshCw,
+const iconMap: Record<string, React.ReactNode> = {
+  CreditCard: <CreditCard className="size-6" />,
+  BadgeCheck: <BadgeCheck className="size-6" />,
+  RefreshCw: <RefreshCw className="size-6" />,
 };
 
-function CardCentre() {
-  const [services, setServices] = useState<any[]>([]);
-  const [intro, setIntro] = useState("Loading...");
-  const [description, setDescription] = useState("Loading...");
-
-  useEffect(() => {
-    getCardCentreServices().then((data) => setServices(data));
-    getSiteSetting("card_centre_intro").then((val) => { if (val) setIntro(val); });
-    getSiteSetting("card_centre_description").then((val) => { if (val) setDescription(val); });
-  }, []);
+export default async function CardCentre() {
+  const [services, replacements] = await Promise.all([
+    getCardCentreServices(),
+    getCardCentreReplacements(),
+  ]);
 
   return (
     <section className="py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="rounded-2xl border bg-muted/30 p-8 text-center">
-          <p className="font-semibold uppercase tracking-widest text-primary">
+        <div className="mb-12 text-center">
+          <p className="text-sm font-semibold uppercase tracking-widest text-primary">
             ICT Directorate
           </p>
-
-          <h2 className="mt-2 text-4xl font-bold">Card Centre</h2>
-
-          <p className="mt-6 text-lg text-muted-foreground">
-            {intro}
-          </p>
-
-          <h3 className="mt-10 text-2xl font-semibold">
-            Introduction to the Card Centre
-          </h3>
-
-          <p className="mt-4 text-muted-foreground">{description}</p>
+          <h2 className="mt-2 text-3xl font-bold">Card Centre</h2>
         </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {services.map((service) => {
-            const Icon = iconMap[service.iconName] || CreditCard;
-
-            return (
-              <Card key={service.id}>
-                <CardHeader>
-                  <div className="mb-4 w-fit rounded-full bg-primary/10 p-3">
-                    <Icon className="h-6 w-6 text-primary" />
-                  </div>
-
-                  <CardTitle>{service.title}</CardTitle>
-                </CardHeader>
-
-                <CardContent>
-                  <p className="leading-7 text-muted-foreground">
-                    {service.description}
-                  </p>
-                </CardContent>
-              </Card>
-            );
-          })}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {services.map((service) => (
+            <Card key={service.id} className="text-center">
+              <CardContent className="space-y-3 p-6">
+                <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  {iconMap[service.iconName] || <CreditCard className="size-6" />}
+                </div>
+                <h3 className="text-lg font-semibold">{service.title}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {service.description}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        <StudentReplacementSteps />
+        {replacements.length > 0 && (
+          <div className="mt-16">
+            <h3 className="text-2xl font-bold mb-6">ID Replacement Steps</h3>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {replacements.map((replacement) => {
+                const steps = JSON.parse(replacement.steps) as string[];
+                return (
+                  <Card key={replacement.id}>
+                    <CardContent className="p-6">
+                      <h4 className="font-semibold mb-3">{replacement.title}</h4>
+                      <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
+                        {steps.map((step, i) => (
+                          <li key={i}>{step}</li>
+                        ))}
+                      </ol>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
 }
-export default CardCentre;
