@@ -9,7 +9,7 @@ export default async function DepartmentsAdminPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Departments</h1>
-        <Button render={<Link href="/admin/departments/new" />}>
+        <Button nativeButton={false} render={<Link href="/admin/departments/new" />}>
           Add Department
         </Button>
       </div>

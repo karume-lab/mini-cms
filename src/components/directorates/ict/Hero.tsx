@@ -4,13 +4,16 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { getHeroSlides } from "@/actions/content";
 
-function Hero() {
+type Slide = Awaited<ReturnType<typeof getHeroSlides>>[number];
+
+function Hero({ initialSlides }: { initialSlides?: Slide[] }) {
   const [current, setCurrent] = useState(0);
-  const [slides, setSlides] = useState<any[]>([]);
+  const [slides, setSlides] = useState<Slide[]>(initialSlides ?? []);
 
   useEffect(() => {
+    if (initialSlides !== undefined) return;
     getHeroSlides().then((data) => setSlides(data));
-  }, []);
+  }, [initialSlides]);
 
   const handleNext = useCallback(() => {
     setCurrent((prev) => (prev + 1) % slides.length);
@@ -49,6 +52,7 @@ function Hero() {
               alt={slide.title}
               fill
               priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
               className="object-cover object-center"
               sizes="100vw"
             />

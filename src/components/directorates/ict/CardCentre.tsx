@@ -1,6 +1,9 @@
+"use client";
+
+import { CreditCard, BadgeCheck, RefreshCw } from "lucide-react";
+import { useEffect, useState } from "react";
 import { getCardCentreServices, getCardCentreReplacements } from "@/actions/content";
 import { Card, CardContent } from "@/components/ui/card";
-import { CreditCard, BadgeCheck, RefreshCw } from "lucide-react";
 
 const iconMap: Record<string, React.ReactNode> = {
   CreditCard: <CreditCard className="size-6" />,
@@ -8,11 +11,28 @@ const iconMap: Record<string, React.ReactNode> = {
   RefreshCw: <RefreshCw className="size-6" />,
 };
 
-export default async function CardCentre() {
-  const [services, replacements] = await Promise.all([
-    getCardCentreServices(),
-    getCardCentreReplacements(),
-  ]);
+type Service = Awaited<ReturnType<typeof getCardCentreServices>>[number];
+type Replacement = Awaited<ReturnType<typeof getCardCentreReplacements>>[number];
+
+export default function CardCentre({
+  initialServices,
+  initialReplacements,
+}: {
+  initialServices?: Service[];
+  initialReplacements?: Replacement[];
+}) {
+  const [services, setServices] = useState<Service[]>(initialServices ?? []);
+  const [replacements, setReplacements] = useState<Replacement[]>(initialReplacements ?? []);
+
+  useEffect(() => {
+    if (initialServices !== undefined && initialReplacements !== undefined) return;
+    Promise.all([getCardCentreServices(), getCardCentreReplacements()]).then(
+      ([s, r]) => {
+        setServices(s);
+        setReplacements(r);
+      },
+    );
+  }, [initialServices, initialReplacements]);
 
   return (
     <section className="py-16 lg:py-24">

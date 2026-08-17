@@ -63,7 +63,7 @@ export default function NewsListPage({ initialNews }: { initialNews?: NewsArticl
                 </p>
 
                 <Button
-                 
+                  nativeButton={false}
                   render={<Link href="/news" />}
                   className="gap-2"
                 >

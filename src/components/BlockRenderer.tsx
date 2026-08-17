@@ -1,6 +1,14 @@
 import React from "react";
-import { ComponentRegistry } from "./blocks/componentRegistry";
 import { DynamicTemplateRenderer } from "./blocks/DynamicTemplateRenderer";
+import { getSiteSetting, getDepartments, getCardCentreServices, getCardCentreReplacements, getNews, getHeroSlides } from "@/actions/content";
+import Hero from "@/components/directorates/ict/Hero";
+import MissionSection from "@/components/directorates/ict/MissionStatement";
+import ApplyCTA from "@/components/directorates/ict/ApplyCta";
+import DepartmentsSection from "@/components/directorates/ict/DepartmentsSection";
+import CardCentre from "@/components/directorates/ict/CardCentre";
+import NewsSection from "@/components/directorates/ict/NewsSection";
+import DepartmentsListPage from "@/components/directorates/ict/DepartmentsListPage";
+import NewsListPage from "@/components/directorates/ict/NewsListPage";
 
 type Styles = {
   bold?: boolean;
@@ -37,6 +45,17 @@ export interface Block {
 interface BlockRendererProps {
   content: string;
 }
+
+type AppData = {
+  heroSlides: Awaited<ReturnType<typeof getHeroSlides>>;
+  missionText: string | null;
+  applyTitle: string | null;
+  applyDescription: string | null;
+  departments: Awaited<ReturnType<typeof getDepartments>>;
+  cardServices: Awaited<ReturnType<typeof getCardCentreServices>>;
+  cardReplacements: Awaited<ReturnType<typeof getCardCentreReplacements>>;
+  news: Awaited<ReturnType<typeof getNews>>;
+};
 
 const renderInlineContent = (content: BlockNoteContent[]) => {
   if (!content) return null;
@@ -88,17 +107,29 @@ const renderInlineContent = (content: BlockNoteContent[]) => {
   });
 };
 
-const renderBlock = (block: Block) => {
-  const CustomComponent = ComponentRegistry[block.type];
-  if (CustomComponent) {
-    return <CustomComponent key={block.id} {...block.props} />;
-  }
-
+const renderBlock = (block: Block, data: AppData) => {
   if (block.type === "dynamicTemplate") {
     return <DynamicTemplateRenderer key={block.id} block={block} />;
   }
 
   switch (block.type) {
+    case "hero":
+      return <Hero key={block.id} initialSlides={data.heroSlides} />;
+    case "missionSection":
+      return <MissionSection key={block.id} initialMissionText={data.missionText} />;
+    case "applyCTA":
+      return <ApplyCTA key={block.id} initialTitle={data.applyTitle} initialDescription={data.applyDescription} />;
+    case "departmentsSection":
+      return <DepartmentsSection key={block.id} initialDepartments={data.departments} />;
+    case "departmentsListPage":
+      return <DepartmentsListPage key={block.id} initialDepartments={data.departments} />;
+    case "cardCentre":
+      return <CardCentre key={block.id} initialServices={data.cardServices} initialReplacements={data.cardReplacements} />;
+    case "newsSection":
+      return <NewsSection key={block.id} initialNews={data.news} />;
+    case "newsListPage":
+      return <NewsListPage key={block.id} initialNews={data.news} />;
+
     case "paragraph":
       if (!block.content || block.content.length === 0)
         return <br key={block.id} />;
@@ -155,7 +186,7 @@ const renderBlock = (block: Block) => {
           {renderInlineContent(block.content)}
           {block.children?.length > 0 && (
             <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
-              {block.children.map(renderBlock)}
+              {block.children.map((child) => renderBlock(child, data))}
             </ul>
           )}
         </li>
@@ -167,7 +198,7 @@ const renderBlock = (block: Block) => {
           {renderInlineContent(block.content)}
           {block.children?.length > 0 && (
             <ol className="my-6 ml-6 list-decimal [&>li]:mt-2">
-              {block.children.map(renderBlock)}
+              {block.children.map((child) => renderBlock(child, data))}
             </ol>
           )}
         </li>
@@ -194,7 +225,7 @@ const renderBlock = (block: Block) => {
           </summary>
           {block.children?.length > 0 && (
             <div className="ml-6 mt-2">
-              {block.children.map(renderBlock)}
+              {block.children.map((child) => renderBlock(child, data))}
             </div>
           )}
         </details>
@@ -269,7 +300,7 @@ const renderBlock = (block: Block) => {
   }
 };
 
-export default function BlockRenderer({ content }: BlockRendererProps) {
+export default async function BlockRenderer({ content }: BlockRendererProps) {
   if (!content) return null;
 
   let blocks: Block[] = [];
@@ -279,6 +310,30 @@ export default function BlockRenderer({ content }: BlockRendererProps) {
     console.error("Failed to parse block content", e);
     return null;
   }
+
+  const blockTypes = new Set(blocks.map((b) => b.type));
+  const needs = {
+    hero: blockTypes.has("hero"),
+    mission: blockTypes.has("missionSection"),
+    apply: blockTypes.has("applyCTA"),
+    depts: blockTypes.has("departmentsSection") || blockTypes.has("departmentsListPage"),
+    card: blockTypes.has("cardCentre"),
+    news: blockTypes.has("newsSection") || blockTypes.has("newsListPage"),
+  };
+
+  const [heroSlides, missionText, applyTitle, applyDescription, departments, cardServices, cardReplacements, news] =
+    await Promise.all([
+      needs.hero ? getHeroSlides() : [],
+      needs.mission ? getSiteSetting("mission_statement") : null,
+      needs.apply ? getSiteSetting("apply_cta_title") : null,
+      needs.apply ? getSiteSetting("apply_cta_description") : null,
+      needs.depts ? getDepartments() : [],
+      needs.card ? getCardCentreServices() : [],
+      needs.card ? getCardCentreReplacements() : [],
+      needs.news ? getNews() : [],
+    ]);
+
+  const data: AppData = { heroSlides, missionText, applyTitle, applyDescription, departments, cardServices, cardReplacements, news };
 
   // Handle grouping lists together
   const renderedBlocks: React.ReactNode[] = [];
@@ -313,7 +368,7 @@ export default function BlockRenderer({ content }: BlockRendererProps) {
         currentList = { type: listType, items: [] };
       }
 
-      currentList.items.push(renderBlock(block));
+      currentList.items.push(renderBlock(block, data));
     } else {
       // Flush current list if any
       if (currentList) {
@@ -335,7 +390,7 @@ export default function BlockRenderer({ content }: BlockRendererProps) {
 
       renderedBlocks.push(
         <React.Fragment key={block.id || `block-${i}`}>
-          {renderBlock(block)}
+          {renderBlock(block, data)}
         </React.Fragment>,
       );
     }

@@ -22,7 +22,7 @@ function DepartmentCard({ department }: Props) {
         </p>
 
         <Button
-         
+          nativeButton={false}
           render={<Link href="/departments" />}
         >
           View More

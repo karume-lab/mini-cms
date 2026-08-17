@@ -35,7 +35,7 @@ export default function NewsSection({ initialNews }: { initialNews?: NewsArticle
           </div>
 
           <Button
-           
+            nativeButton={false}
             render={<Link href="/news" />}
             variant="outline"
           >
@@ -73,7 +73,7 @@ export default function NewsSection({ initialNews }: { initialNews?: NewsArticle
                 </p>
 
                 <Button
-                 
+                  nativeButton={false}
                   render={<Link href="/news" />}
                   className="gap-2"
                 >

@@ -1,8 +1,18 @@
+"use client";
+
 import { Target } from "lucide-react";
+import { useEffect, useState } from "react";
 import { getSiteSetting } from "@/actions/content";
 
-export default async function MissionSection() {
-  const missionText = await getSiteSetting("mission_statement");
+export default function MissionSection({ initialMissionText }: { initialMissionText?: string | null }) {
+  const [missionText, setMissionText] = useState(initialMissionText ?? "Loading...");
+
+  useEffect(() => {
+    if (initialMissionText != null) return;
+    getSiteSetting("mission_statement").then((text) => {
+      if (text) setMissionText(text);
+    });
+  }, [initialMissionText]);
 
   return (
     <section className="py-16 lg:py-24">
@@ -24,7 +34,7 @@ export default async function MissionSection() {
 
           <div className="border-l-4 border-primary pl-6">
             <p className="text-lg leading-8 text-muted-foreground md:text-xl">
-              {missionText || ""}
+              {missionText}
             </p>
           </div>
         </div>
